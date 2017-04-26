@@ -31,5 +31,21 @@
             android:gravity="center"
             android:textSize="16dip"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/name_of_user"
+            android:textSize="20dp"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/logout_btn"
+            android:text="Logout"/>
+
+
     </LinearLayout>
+
+
+
 </RelativeLayout>

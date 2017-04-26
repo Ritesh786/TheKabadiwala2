@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
-        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -29,20 +28,20 @@
         <activity android:name=".LoginViaOtp" />
 
         <!-- SMS Receiver -->
-        <receiver android:name=".receiver.SmsReceiver">
-            <intent-filter android:priority="99999">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
+
 
         <!-- Intent service -->
-        <service
-            android:name=".service.HttpService"
-            android:exported="false" />
 
-        <activity android:name=".activity.SmsActivity" />
         <activity android:name=".DialogueConfirm" />
-        <activity android:name=".Success"></activity>
+        <activity android:name=".Success" />
+        <activity
+            android:name=".RegistrationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".DashBoard"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SendOtp"></activity>
     </application>
 
 </manifest>

@@ -7,10 +7,12 @@ import android.os.Bundle;
 
 public class SplashActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
 
         Thread splashthread = new Thread(){
             public void run(){
@@ -18,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
                     sleep(2000);
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                            startActivity(new Intent(SplashActivity.this, DashBoard.class));
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         }
                     });
@@ -31,7 +33,11 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
+
         splashthread.start();
+
+
+
 
     }
 
