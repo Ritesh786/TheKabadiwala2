@@ -11,6 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.newkabadiwala.fujitsu.thekabadiwala.RegistrationActivity">
 
 
@@ -60,6 +61,7 @@
             android:layout_gravity="center"
             android:inputType="number"
             android:maxLength="10"
+
             />
     </android.support.design.widget.TextInputLayout>
 
@@ -99,7 +101,9 @@
             android:hint=" Name"
             android:id="@+id/reg_name"
             android:layout_gravity="center"
-            />
+            android:inputType="textFilter"
+          />
+
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -233,6 +237,8 @@
             android:hint=" Pincode"
             android:id="@+id/reg_pincode"
             android:layout_gravity="center"
+            android:maxLength="6"
+            android:inputType="number"
             />
     </android.support.design.widget.TextInputLayout>
 

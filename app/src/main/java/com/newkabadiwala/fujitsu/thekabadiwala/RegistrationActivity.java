@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,12 +23,19 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText musertype, musername, mpassword, mname, memail, mmobile, mcity, marea, mstate, mlandmark, mpincode;
     Button mbtnregister;
 
-    String usertype, usernsme, password, name, email, mobile, city, area, state, landmark, pincode;
+    String   password, name, email, mobile, city, area, state, landmark, pincode;
+    String usertype;
+    String  usernsme;
 
 
     @Override
@@ -39,15 +48,12 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         mpassword = (EditText) findViewById(R.id.reg_password);
         mname = (EditText) findViewById(R.id.reg_name);
         memail = (EditText) findViewById(R.id.reg_email);
-       // mmobile = (EditText) findViewById(R.id.reg_mobile);
+        // mmobile = (EditText) findViewById(R.id.reg_mobile);
         mcity = (EditText) findViewById(R.id.reg_city);
         marea = (EditText) findViewById(R.id.reg_area);
         mstate = (EditText) findViewById(R.id.reg_state);
         mlandmark = (EditText) findViewById(R.id.reg_landmark);
         mpincode = (EditText) findViewById(R.id.reg_pincode);
-
-
-
 
 
         mbtnregister = (Button) findViewById(R.id.btn_Register);
@@ -56,8 +62,35 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
     }
 
+    public boolean isValidPhoneNumber(String phoneNumber) {
+
+        String expression ="^(\\+91[\\-\\s]?)?[0]?(91)?[789]\\d{9}$";
+        CharSequence inputString = phoneNumber;
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher(inputString);
+        if (matcher.matches())
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
+
+
     @Override
     public void onClick(View v) {
+
+//        usernsme = musername.getText().toString().trim();
+//
+//        if(isValidPhoneNumber(usernsme)==false){
+//
+//            musername.requestFocus();
+//            musername.setError("PLease Fill Correct Number");
+//        }
+
 
         registerUser();
     }
@@ -69,56 +102,110 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         password = mpassword.getText().toString().trim();
         name = mname.getText().toString().trim();
         email = memail.getText().toString().trim();
-    //    mobile = mmobile.getText().toString().trim();
+        //    mobile = mmobile.getText().toString().trim();
         city = mcity.getText().toString().trim();
         area = marea.getText().toString().trim();
         state = mstate.getText().toString().trim();
         landmark = mlandmark.getText().toString().trim();
         pincode = mpincode.getText().toString().trim();
 
-        final String REGISTER_URL = "http://kabadiwalatest.azurewebsites.net/api/member/register?username=" + usernsme + "&password=" + password + "&area=" + area + "&city=" + city + "&landmark=" + landmark + "&state=" + state + "&pincode=" + pincode + "&name=" + name + "&mobileno=" + usernsme + "&email=" + email + "&usertype=" + usertype + "";
 
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, REGISTER_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("jaba",usernsme);
-                        try {
-                            JSONObject jsonresponse = new JSONObject(response);
-                            boolean success = jsonresponse.getBoolean("success");
+        if (TextUtils.isEmpty( usertype)) {
+            musertype.requestFocus();
+            musertype.setError("This Field Is Mandatory");
+        }
+        else if (TextUtils.isEmpty(usernsme)) {
+            musername.requestFocus();
+            musername.setError("This Field Is Mandatory");
+        }else if(usernsme.length()<10 || isValidPhoneNumber(usernsme)==false){
+            
+            musername.requestFocus();
+            musername.setError("PLease Fill Correct Number");
+        }
+        else if (TextUtils.isEmpty(password)) {
+            mpassword.requestFocus();
+            mpassword.setError("This Field Is Mandatory");
+        } else if (TextUtils.isEmpty(name)) {
+            mname.requestFocus();
+            mname.setError("This Field Is Mandatory");
+        } else if (TextUtils.isEmpty(city)) {
+            mcity.requestFocus();
+            mcity.setError("This Field Is Mandatory");
+        } else if (TextUtils.isEmpty(area)) {
+            marea.requestFocus();
+            marea.setError("This Field Is Mandatory");
+        } else if (TextUtils.isEmpty(state)) {
+            mstate.requestFocus();
+            mstate.setError("This Field Is Mandatory");
+        } else if (TextUtils.isEmpty(landmark)) {
+            mlandmark.requestFocus();
+            mlandmark.setError("This Field Is Mandatory");
+        } else if (TextUtils.isEmpty(pincode)) {
+            mpincode.requestFocus();
+            mpincode.setError("This Field Is Mandatory");
+        }
+        else if (pincode.length()<6) {
+            mpincode.requestFocus();
+            mpincode.setError("Please Fill Correct Pincode");
+        }
 
-                            if(success){
+        else {
+            String url = null;
+          String REGISTER_URL = "http://kabadiwalatest.azurewebsites.net/api/member/register?username=" + usernsme + "&password=" + password + "&area=" + area + "&city=" + city + "&landmark=" + landmark + "&state=" + state + "&pincode=" + pincode + "&name=" + name + "&mobileno=" + usernsme + "&email=" + email + "&usertype=" +  usertype + "";
 
-                                Intent registerintent = new Intent(RegistrationActivity.this,MainActivity.class);
-                                startActivity(registerintent);
-                            }else{
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
-                                builder.setMessage("Registration Failed")
-                                        .setNegativeButton("Retry",null)
-                                        .create()
-                                        .show();
+            REGISTER_URL = REGISTER_URL.replaceAll(" ", "%20");
+            try {
+                URL sourceUrl = new URL(REGISTER_URL);
+                url = sourceUrl.toString();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
 
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("jaba", usernsme);
+                            try {
+                                JSONObject jsonresponse = new JSONObject(response);
+                                boolean success = jsonresponse.getBoolean("success");
+
+                                if (success) {
+
+                                    Intent registerintent = new Intent(RegistrationActivity.this, MainActivity.class);
+                                    startActivity(registerintent);
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
+                                    builder.setMessage("Registration Failed")
+                                            .setNegativeButton("Retry", null)
+                                            .create()
+                                            .show();
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            Toast.makeText(RegistrationActivity.this, response.toString(), Toast.LENGTH_LONG).show();
                         }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("jabadi", usernsme);
+                            Toast.makeText(RegistrationActivity.this, error.toString(), Toast.LENGTH_LONG).show();
 
-                        Toast.makeText(RegistrationActivity.this, response.toString(), Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("jabadi",usernsme);
-                        Toast.makeText(RegistrationActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
 
-                    }
-                }) {
-
-        };RequestQueue requestQueue = Volley.newRequestQueue(RegistrationActivity.this);
-          requestQueue.add(stringRequest);
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(RegistrationActivity.this);
+            requestQueue.add(stringRequest);
+        }
     }
-}
 
+   
+
+}
